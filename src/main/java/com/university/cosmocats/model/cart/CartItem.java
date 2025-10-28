@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-// This class is a future entity
 public class CartItem {
     private Long id;
     private Product product;

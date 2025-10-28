@@ -1,19 +1,15 @@
 package com.university.cosmocats.dto.product;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
+@Builder
 public class ProductResponseDto {
-    private Long id;
-    private String name;
-    private String description;
-    private BigDecimal price;
-    private String category; // will be enum soon
-    private Integer stock; // how many these products are left
+    Long id;
+    String name;
+    String description;
+    BigDecimal price;
+    String category;
 }

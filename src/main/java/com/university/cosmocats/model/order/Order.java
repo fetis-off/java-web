@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 @Setter
-// This class is a future entity
 public class Order {
     private Long id;
 

@@ -34,7 +34,6 @@ public class MockedProductDatabase {
         iphone.setName("iPhone 15");
         iphone.setDescription("Latest Apple smartphone with A17 chip");
         iphone.setPrice(BigDecimal.valueOf(999.99));
-        iphone.setQuantity(10);
         iphone.setCategory(electronics);
 
         Product cleanCode = new Product();
@@ -42,7 +41,6 @@ public class MockedProductDatabase {
         cleanCode.setName("Clean Code");
         cleanCode.setDescription("A Handbook of Agile Software Craftsmanship by Robert C. Martin");
         cleanCode.setPrice(BigDecimal.valueOf(45.50));
-        cleanCode.setQuantity(50);
         cleanCode.setCategory(books);
 
         products.put(iphone.getId(), iphone);

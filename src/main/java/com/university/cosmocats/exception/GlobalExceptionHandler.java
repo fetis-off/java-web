@@ -48,4 +48,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setProperty("invalidParams", validationResponse);
         return problemDetail;
     }
+
 }
