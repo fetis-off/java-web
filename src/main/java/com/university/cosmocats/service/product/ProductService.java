@@ -52,7 +52,7 @@ public class ProductService {
         return mockedProductDatabase.save(existingProduct);
     }
 
-    private Long generateId() {
+    protected Long generateId() {
         return mockedProductDatabase.findAll().stream()
                 .mapToLong(Product::getId)
                 .max()

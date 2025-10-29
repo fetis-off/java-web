@@ -14,7 +14,6 @@ public interface ProductMapper {
     Product toProduct(CreateProductRequestDto requestDto);
 
     @Mapping(source = "category.name", target = "category")
-    @Mapping(source = "quantity", target = "stock")
     ProductResponseDto toProductResponseDto(Product product);
 
     @Mapping(source = "category", target = "category", ignore = true)
