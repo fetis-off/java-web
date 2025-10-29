@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Value
+@AllArgsConstructor
 @Builder
 public class CreateProductRequestDto {
     @NotBlank(message = "Name is mandatory field")
