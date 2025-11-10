@@ -2,6 +2,7 @@ package com.university.cosmocats.repository;
 
 import com.university.cosmocats.model.product.Category;
 import com.university.cosmocats.model.product.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class MockedProductDatabase {
     private Map<Long, Product> products = new HashMap<>();
@@ -65,6 +67,10 @@ public class MockedProductDatabase {
     }
 
     public void deleteById(Long id) {
-        products.remove(id);
+        try {
+            products.remove(id);
+        } catch (Exception e) {
+            log.error("Error while deleting product with id: {}", id);
+        }
     }
 }

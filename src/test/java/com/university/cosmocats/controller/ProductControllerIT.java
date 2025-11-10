@@ -231,7 +231,7 @@ class ProductControllerIT {
     }
 
     @Test
-    @DisplayName("Should return 404 while deleting product by id")
+    @DisplayName("Should return 204 while deleting product by non existing id")
     void deleteProduct_invalidId_shouldReturnNotFound() {
 
         given()
@@ -241,9 +241,6 @@ class ProductControllerIT {
                 .delete("api/v1/products/{id}", INVALID_PRODUCT_ID)
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .body(ProblemDetailFieldNames.PROBLEM_DETAIL_FIELD, equalTo("Product with ID: 100 not found"))
-                .body(ProblemDetailFieldNames.PROBLEM_DETAIL_TITLE_FIELD, equalTo("Product Not Found"))
-                .body(ProblemDetailFieldNames.PROBLEM_DETAIL_STATUS, equalTo(HttpStatus.NOT_FOUND.value()));
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

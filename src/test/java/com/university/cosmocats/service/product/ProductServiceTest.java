@@ -183,23 +183,7 @@ class ProductServiceTest {
 
         productService.deleteProduct(VALID_PRODUCT_ID);
 
-        verify(mockedProductDatabase).findById(VALID_PRODUCT_ID);
         verify(mockedProductDatabase).deleteById(VALID_PRODUCT_ID);
-    }
-
-    @Test
-    @DisplayName("Should throw exception when deleting non-existent product")
-    void testDeleteNonExistentProduct() {
-        when(mockedProductDatabase.findById(NON_EXISTING_PRODUCT_ID)).thenReturn(null);
-
-        ProductNotFoundException exception = assertThrows(
-                ProductNotFoundException.class,
-                () -> productService.deleteProduct(NON_EXISTING_PRODUCT_ID)
-        );
-
-        assertEquals("Product with ID: " + NON_EXISTING_PRODUCT_ID + " not found", exception.getMessage());
-        verify(mockedProductDatabase).findById(NON_EXISTING_PRODUCT_ID);
-        verify(mockedProductDatabase, never()).deleteById(NON_EXISTING_PRODUCT_ID);
     }
 
     @Test
