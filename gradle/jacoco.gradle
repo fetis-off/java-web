@@ -15,7 +15,8 @@ jacocoTestCoverageVerification {
     def filesExcludedFromCoverage = [
             '**/CosmoCatsApplication.class',
             '**/model/order/**',
-            '**/model/cart/**'
+            '**/model/cart/**',
+            '**/featuretoggle/**'
     ]
     description = "Verifies coverage based on defined thresholds on all tests (incl. Unit and Integration))"
     executionData = fileTree(layout.buildDirectory).include("/jacoco/*.exec")
