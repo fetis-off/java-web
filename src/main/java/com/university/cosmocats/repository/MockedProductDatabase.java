@@ -2,6 +2,7 @@ package com.university.cosmocats.repository;
 
 import com.university.cosmocats.model.product.Category;
 import com.university.cosmocats.model.product.Product;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class MockedProductDatabase {
     private Map<Long, Product> products = new HashMap<>();
@@ -19,36 +21,41 @@ public class MockedProductDatabase {
     }
 
     private void initMockData() {
-        Category electronics = new Category();
-        electronics.setId(1L);
-        electronics.setName("Electronics");
-        electronics.setDescription("Electronic gadgets and devices");
+        Category electronics = Category.builder()
+                .id(1L)
+                .name("Electronics")
+                .description("Electronic gadgets and devices")
+                .build();
 
-        Category books = new Category();
-        books.setId(2L);
-        books.setName("Books");
-        books.setDescription("Printed and digital books");
+        Category books = Category.builder()
+                .id(2L)
+                .name("Books")
+                .description("Printed and digital books")
+                .build();
 
-        Product iphone = new Product();
-        iphone.setId(1L);
-        iphone.setName("iPhone 15");
-        iphone.setDescription("Latest Apple smartphone with A17 chip");
-        iphone.setPrice(BigDecimal.valueOf(999.99));
-        iphone.setCategory(electronics);
+        Product iphone = Product.builder()
+                .id(1L)
+                .name("iPhone 15")
+                .description("Latest Apple smartphone with A17 chip")
+                .price(BigDecimal.valueOf(999.99))
+                .category(electronics)
+                .build();
 
-        Product cleanCode = new Product();
-        cleanCode.setId(2L);
-        cleanCode.setName("Clean Code");
-        cleanCode.setDescription("A Handbook of Agile Software Craftsmanship by Robert C. Martin");
-        cleanCode.setPrice(BigDecimal.valueOf(45.50));
-        cleanCode.setCategory(books);
+        Product cleanCode = Product.builder()
+                .id(2L)
+                .name("Clean Code")
+                .description("A Handbook of Agile Software Craftsmanship by Robert C. Martin")
+                .price(BigDecimal.valueOf(45.50))
+                .category(books)
+                .build();
 
         products.put(iphone.getId(), iphone);
         products.put(cleanCode.getId(), cleanCode);
     }
 
     public Product save(Product product) {
-        return products.put(product.getId(), product);
+        products.put(product.getId(), product);
+        return product;
     }
 
     public Product findById(Long id) {
@@ -60,6 +67,10 @@ public class MockedProductDatabase {
     }
 
     public void deleteById(Long id) {
-        products.remove(id);
+        try {
+            products.remove(id);
+        } catch (Exception e) {
+            log.error("Error while deleting product with id: {}", id);
+        }
     }
 }

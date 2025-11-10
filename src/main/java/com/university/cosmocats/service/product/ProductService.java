@@ -40,9 +40,6 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        if (Objects.isNull(mockedProductDatabase.findById(id))) {
-            throw new ProductNotFoundException("Product with ID: " + id + " not found");
-        }
         mockedProductDatabase.deleteById(id);
     }
 
@@ -52,7 +49,7 @@ public class ProductService {
         return mockedProductDatabase.save(existingProduct);
     }
 
-    private Long generateId() {
+    protected Long generateId() {
         return mockedProductDatabase.findAll().stream()
                 .mapToLong(Product::getId)
                 .max()
