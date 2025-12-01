@@ -1,4 +1,4 @@
-package com.university.cosmocats.model.product;
+package com.university.cosmocats.domain.product;
 
 import lombok.Builder;
 import lombok.Getter;

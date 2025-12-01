@@ -1,8 +1,8 @@
-package com.university.cosmocats.mapper.product;
+package com.university.cosmocats.mapper;
 
 import com.university.cosmocats.dto.product.CreateProductRequestDto;
 import com.university.cosmocats.dto.product.ProductResponseDto;
-import com.university.cosmocats.model.product.Product;
+import com.university.cosmocats.domain.product.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

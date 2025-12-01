@@ -1,9 +1,9 @@
-package com.university.cosmocats.service.product;
+package com.university.cosmocats.service;
 
 import com.university.cosmocats.dto.product.CreateProductRequestDto;
 import com.university.cosmocats.exception.ProductNotFoundException;
-import com.university.cosmocats.mapper.product.ProductMapper;
-import com.university.cosmocats.model.product.Product;
+import com.university.cosmocats.mapper.ProductMapper;
+import com.university.cosmocats.domain.product.Product;
 import com.university.cosmocats.repository.MockedProductDatabase;
 import org.springframework.stereotype.Component;
 

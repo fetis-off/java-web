@@ -1,7 +1,7 @@
 package com.university.cosmocats.repository;
 
-import com.university.cosmocats.model.product.Category;
-import com.university.cosmocats.model.product.Product;
+import com.university.cosmocats.domain.product.Category;
+import com.university.cosmocats.domain.product.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

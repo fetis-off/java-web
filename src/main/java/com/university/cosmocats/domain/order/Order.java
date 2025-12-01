@@ -1,4 +1,4 @@
-package com.university.cosmocats.model.order;
+package com.university.cosmocats.domain.order;
 
 import lombok.Getter;
 import lombok.Setter;

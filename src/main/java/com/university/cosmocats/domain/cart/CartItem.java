@@ -1,6 +1,6 @@
-package com.university.cosmocats.model.cart;
+package com.university.cosmocats.domain.cart;
 
-import com.university.cosmocats.model.product.Product;
+import com.university.cosmocats.domain.product.Product;
 import lombok.Getter;
 import lombok.Setter;
 

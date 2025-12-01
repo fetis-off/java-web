@@ -27,6 +27,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    ProblemDetail handleCategoryNotFoundException(CategoryNotFoundException ex) {
+        log.info("Category Not Found Exception occurred");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("category-not-found"));
+        problemDetail.setTitle("Category Not Found");
+        return problemDetail;
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,

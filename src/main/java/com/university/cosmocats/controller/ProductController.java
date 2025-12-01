@@ -2,8 +2,8 @@ package com.university.cosmocats.controller;
 
 import com.university.cosmocats.dto.product.CreateProductRequestDto;
 import com.university.cosmocats.dto.product.ProductResponseDto;
-import com.university.cosmocats.mapper.product.ProductMapper;
-import com.university.cosmocats.service.product.ProductService;
+import com.university.cosmocats.mapper.ProductMapper;
+import com.university.cosmocats.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.university.cosmocats.model.cart;
+package com.university.cosmocats.domain.cart;
 
 import lombok.Getter;
 import lombok.Setter;
