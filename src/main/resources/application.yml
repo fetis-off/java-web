@@ -18,6 +18,10 @@ spring:
     name:
       cosmo-cats
 
+    feature:
+      toggles:
+        cosmo-cats: false
+
   liquibase:
     change-log: classpath:liquibase/changelog.yaml
     enabled: true

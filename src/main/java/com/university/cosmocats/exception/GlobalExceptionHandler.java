@@ -1,5 +1,6 @@
 package com.university.cosmocats.exception;
 
+import com.university.cosmocats.featuretoggle.exception.FeatureToggleNotEnabledException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.validation.FieldError;
@@ -24,6 +25,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setType(create("product-not-found"));
         problemDetail.setTitle("Product Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(FeatureToggleNotEnabledException.class)
+    ProblemDetail handleFeatureToggleNotEnabledException(FeatureToggleNotEnabledException ex) {
+        log.info("Feature Toggle Not Enabled Exception occurred");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setType(create("feature-toggle-not-enabled"));
+        problemDetail.setTitle("Feature Toggle Not Enabled");
         return problemDetail;
     }
 
