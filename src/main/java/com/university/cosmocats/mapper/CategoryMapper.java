@@ -1,5 +1,6 @@
 package com.university.cosmocats.mapper;
 
+import com.university.cosmocats.domain.product.Category;
 import com.university.cosmocats.dto.category.CategoryResponseDto;
 import com.university.cosmocats.dto.category.CreateCategoryRequestDto;
 import com.university.cosmocats.entity.CategoryEntity;
@@ -10,6 +11,8 @@ import org.mapstruct.MappingTarget;
 public interface CategoryMapper {
 
     CategoryEntity toCategoryEntity(CreateCategoryRequestDto requestDto);
+
+    Category toCategoryDomain(CategoryEntity categoryEntity);
 
     CategoryResponseDto toCategoryResponseDto(CategoryEntity categoryEntity);
 

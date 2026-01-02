@@ -13,7 +13,7 @@ import java.util.List;
 public class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_id_seq")
-    @SequenceGenerator(name = "category_id_seq", sequenceName = "category_id_seq", allocationSize = 50)
+    @SequenceGenerator(name = "category_id_seq", sequenceName = "category_id_seq")
     private Long id;
 
     @Column(nullable = false,  unique = true)

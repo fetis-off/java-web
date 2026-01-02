@@ -1,32 +1,38 @@
 package com.university.cosmocats.service.product;
 
-import com.university.cosmocats.config.MappersTestConfiguration;
-import com.university.cosmocats.dto.product.CreateProductRequestDto;
+import com.university.cosmocats.dto.product.ProductRequestDto;
+import com.university.cosmocats.dto.product.ProductResponseDto;
+import com.university.cosmocats.dto.product.UpdateProductRequestDto;
+import com.university.cosmocats.entity.CategoryEntity;
+import com.university.cosmocats.entity.ProductEntity;
 import com.university.cosmocats.exception.ProductNotFoundException;
 import com.university.cosmocats.domain.product.Category;
-import com.university.cosmocats.domain.product.Product;
-import com.university.cosmocats.repository.MockedProductDatabase;
+import com.university.cosmocats.mapper.ProductMapper;
+import com.university.cosmocats.repository.ProductRepository;
+import com.university.cosmocats.service.CategoryService;
 import com.university.cosmocats.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest(classes = ProductService.class)
-@Import(MappersTestConfiguration.class)
 @DisplayName("Product service tests")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -41,14 +47,23 @@ class ProductServiceTest {
     private static final String PRODUCT_DESCRIPTION = "Banana is a yellow fruit";
     private static final BigDecimal PRODUCT_PRICE = BigDecimal.valueOf(15.99);
 
-    private Product testProduct;
+    private ProductResponseDto testProduct;
     private Category testCategory;
-    private CreateProductRequestDto productRequestDto;
+    private ProductEntity testProductEntity;
+    private CategoryEntity testCategoryEntity;
+    private ProductRequestDto productRequestDto;
 
-    @MockitoBean
-    private MockedProductDatabase mockedProductDatabase;
 
-    @Autowired
+    @Mock
+    private ProductRepository productRepository;
+
+    @Mock
+    private CategoryService categoryService;
+
+    @Spy
+    private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
+
+    @InjectMocks
     private ProductService productService;
 
     @BeforeEach
@@ -59,7 +74,7 @@ class ProductServiceTest {
                 .description(CATEGORY_DESCRIPTION)
                 .build();
 
-        testProduct = Product.builder()
+        testProduct = ProductResponseDto.builder()
                 .id(VALID_PRODUCT_ID)
                 .name(PRODUCT_NAME)
                 .description(PRODUCT_DESCRIPTION)
@@ -67,22 +82,26 @@ class ProductServiceTest {
                 .category(testCategory)
                 .build();
 
-        productRequestDto = CreateProductRequestDto.builder()
+        productRequestDto = ProductRequestDto.builder()
                 .name(PRODUCT_NAME)
                 .description(PRODUCT_DESCRIPTION)
                 .price(PRODUCT_PRICE)
-                .category(CATEGORY_NAME)
+                .categoryId(CATEGORY_ID)
                 .build();
+
+        testCategoryEntity = prepareCategoryEntity();
+
+        testProductEntity = prepareProductEntity();
     }
 
 
     @Test
     @DisplayName("Should create product successfully")
     void testCreateProduct() {
-        when(mockedProductDatabase.findAll()).thenReturn(List.of());
-        when(mockedProductDatabase.save(any(Product.class))).thenReturn(testProduct);
+        when(categoryService.findCategoryEntityById(CATEGORY_ID)).thenReturn(testCategoryEntity);
+        when(productRepository.save(any(ProductEntity.class))).thenReturn(testProductEntity);
 
-        Product createdProduct = productService.createProduct(productRequestDto);
+        ProductResponseDto createdProduct = productService.createProduct(productRequestDto);
 
         assertNotNull(createdProduct);
 
@@ -96,9 +115,9 @@ class ProductServiceTest {
     @Test
     @DisplayName("Should get product by existing id")
     void testGetExistingProductById() {
-        when(mockedProductDatabase.findById(VALID_PRODUCT_ID)).thenReturn(testProduct);
+        when(productRepository.findById(VALID_PRODUCT_ID)).thenReturn(Optional.of(testProductEntity));
 
-        Product product = productService.getProductById(VALID_PRODUCT_ID);
+        ProductResponseDto product = productService.getProductById(VALID_PRODUCT_ID);
 
         assertNotNull(product);
 
@@ -112,119 +131,113 @@ class ProductServiceTest {
     @Test
     @DisplayName("Should get product by non-existing id")
     void testGetNonExistingProductById() {
-        when(mockedProductDatabase.findById(NON_EXISTING_PRODUCT_ID)).thenReturn(null);
+        when(productRepository.findById(NON_EXISTING_PRODUCT_ID)).thenReturn(Optional.empty());
 
         ProductNotFoundException exception = assertThrows(
                 ProductNotFoundException.class,
                 () -> productService.getProductById(NON_EXISTING_PRODUCT_ID)
         );
 
-        assertEquals("Product with ID: " + NON_EXISTING_PRODUCT_ID + " not found", exception.getMessage());
-        verify(mockedProductDatabase).findById(NON_EXISTING_PRODUCT_ID);
-    }
-
-    @Test
-    @DisplayName("Should generate ID 1 when database is empty")
-    void testGenerateIdOneWhenDatabaseIsEmpty() {
-        when(mockedProductDatabase.findAll()).thenReturn(Collections.emptyList());
-        when(mockedProductDatabase.save(any(Product.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
-        Product createdProduct = productService.createProduct(productRequestDto);
-
-        assertNotNull(createdProduct);
-        assertEquals(1L, createdProduct.getId());
-    }
-
-    @Test
-    @DisplayName("Should generate next sequential ID")
-    void testGenerateIdNextSequentialId() {
-        Product product1 = Product.builder().id(5L).build();
-        Product product2 = Product.builder().id(6L).build();
-        when(mockedProductDatabase.findAll()).thenReturn(List.of(product1, product2));
-        when(mockedProductDatabase.save(any(Product.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
-        Product createdProduct = productService.createProduct(productRequestDto);
-
-        assertEquals(7L, createdProduct.getId());
+        assertEquals("Product with id: " + NON_EXISTING_PRODUCT_ID + " was not found", exception.getMessage());
+        verify(productRepository).findById(NON_EXISTING_PRODUCT_ID);
     }
 
     @Test
     @DisplayName("Should get all products")
     void testGetAllProducts() {
-        Product secondTestProduct = Product.builder().id(2L).build();
-        List<Product> products = List.of(testProduct, secondTestProduct);
-        when(mockedProductDatabase.findAll()).thenReturn(products);
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<Product> result = productService.getAllProducts();
+        ProductEntity secondTestProductEntity = new ProductEntity();
+        secondTestProductEntity.setId(2L);
+        Page<ProductEntity> productResponseDtoPage = new PageImpl<>(List.of(testProductEntity, secondTestProductEntity));
+        when(productRepository.findAll(pageable)).thenReturn(productResponseDtoPage);
+
+        Page<ProductResponseDto> result = productService.getALlProducts(pageable);
 
         assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(mockedProductDatabase).findAll();
+        assertEquals(2, result.getTotalElements());
+        verify(productRepository).findAll(pageable);
     }
 
     @Test
     @DisplayName("Should return empty list when no products exist")
     void testGetAllProductsWhenNoProductsExist() {
-        when(mockedProductDatabase.findAll()).thenReturn(Collections.emptyList());
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<Product> result = productService.getAllProducts();
+        when(productRepository.findAll(pageable)).thenReturn(Page.empty());
+
+        Page<ProductResponseDto> result = productService.getALlProducts(pageable);
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
-        verify(mockedProductDatabase).findAll();
+        verify(productRepository).findAll(pageable);
     }
 
     @Test
     @DisplayName("Should delete product successfully when ID exists")
     void testDeleteProductWhenIdExists() {
-        when(mockedProductDatabase.findById(VALID_PRODUCT_ID)).thenReturn(testProduct);
-        doNothing().when(mockedProductDatabase).deleteById(VALID_PRODUCT_ID);
+        doNothing().when(productRepository).deleteById(VALID_PRODUCT_ID);
 
         productService.deleteProduct(VALID_PRODUCT_ID);
 
-        verify(mockedProductDatabase).deleteById(VALID_PRODUCT_ID);
+        verify(productRepository).deleteById(VALID_PRODUCT_ID);
     }
 
     @Test
     @DisplayName("Should update product successfully when ID exists")
     void testUpdateProductWhenIdExists() {
         // Given
-        CreateProductRequestDto updateRequest = CreateProductRequestDto.builder()
+        UpdateProductRequestDto updateRequest = UpdateProductRequestDto.builder()
                         .name("Updated Banana")
                         .description("Updated description")
                         .price(BigDecimal.valueOf(19.99))
                         .build();
 
-        when(mockedProductDatabase.findById(VALID_PRODUCT_ID)).thenReturn(testProduct);
-        when(mockedProductDatabase.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(productRepository.findById(VALID_PRODUCT_ID)).thenReturn(Optional.of(testProductEntity));
 
-        Product result = productService.updateProduct(VALID_PRODUCT_ID, updateRequest);
+        ProductResponseDto result = productService.updateProduct(VALID_PRODUCT_ID, updateRequest);
 
         assertNotNull(result);
         assertEquals(VALID_PRODUCT_ID, result.getId());
-        verify(mockedProductDatabase).findById(VALID_PRODUCT_ID);
-        verify(mockedProductDatabase).save(testProduct);
+        assertEquals(result.getName(), "Updated Banana");
+        verify(productRepository).findById(VALID_PRODUCT_ID);
     }
 
     @Test
     @DisplayName("Should throw exception when updating non-existent product")
     void testUpdateNonExistentProduct() {
-        CreateProductRequestDto updateRequest = CreateProductRequestDto.builder()
+        UpdateProductRequestDto updateRequest = UpdateProductRequestDto.builder()
                 .name("Updated Banana")
                 .build();
 
-        when(mockedProductDatabase.findById(NON_EXISTING_PRODUCT_ID)).thenReturn(null);
+        when(productRepository.findById(NON_EXISTING_PRODUCT_ID)).thenReturn(Optional.empty());
 
         ProductNotFoundException exception = assertThrows(
                 ProductNotFoundException.class,
                 () -> productService.updateProduct(NON_EXISTING_PRODUCT_ID, updateRequest)
         );
 
-        assertEquals("Product with ID: " + NON_EXISTING_PRODUCT_ID + " not found", exception.getMessage());
-        verify(mockedProductDatabase).findById(NON_EXISTING_PRODUCT_ID);
-        verify(mockedProductDatabase, never()).save(any());
+        assertEquals("Product with id: " + NON_EXISTING_PRODUCT_ID + " was not found", exception.getMessage());
+        verify(productRepository).findById(NON_EXISTING_PRODUCT_ID);
     }
 
+    private ProductEntity prepareProductEntity() {
+        ProductEntity productEntity = new ProductEntity();
+        productEntity.setName(PRODUCT_NAME);
+        productEntity.setDescription(PRODUCT_DESCRIPTION);
+        productEntity.setId(VALID_PRODUCT_ID);
+        productEntity.setPrice(PRODUCT_PRICE);
+        productEntity.setCategory(prepareCategoryEntity());
+
+        return productEntity;
+    }
+
+    private CategoryEntity prepareCategoryEntity() {
+        CategoryEntity categoryEntity = new CategoryEntity();
+        categoryEntity.setId(CATEGORY_ID);
+        categoryEntity.setName(CATEGORY_NAME);
+        categoryEntity.setDescription(CATEGORY_DESCRIPTION);
+
+        return categoryEntity;
+    }
 }

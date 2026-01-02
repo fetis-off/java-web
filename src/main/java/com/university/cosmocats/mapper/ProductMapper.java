@@ -1,21 +1,17 @@
 package com.university.cosmocats.mapper;
 
-import com.university.cosmocats.dto.product.CreateProductRequestDto;
+import com.university.cosmocats.dto.product.ProductRequestDto;
 import com.university.cosmocats.dto.product.ProductResponseDto;
-import com.university.cosmocats.domain.product.Product;
+import com.university.cosmocats.dto.product.UpdateProductRequestDto;
+import com.university.cosmocats.entity.ProductEntity;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
+    ProductEntity toProductEntity(ProductRequestDto requestDto);
 
-    @Mapping(source = "category", target = "category", ignore = true)
-    Product toProduct(CreateProductRequestDto requestDto);
+    ProductResponseDto toProductResponseDto(ProductEntity productEntity);
 
-    @Mapping(source = "category.name", target = "category")
-    ProductResponseDto toProductResponseDto(Product product);
-
-    @Mapping(source = "category", target = "category", ignore = true)
-    void updateProduct(@MappingTarget Product product, CreateProductRequestDto requestDto);
+    void updateProduct(@MappingTarget ProductEntity productEntity, UpdateProductRequestDto requestDto);
 }

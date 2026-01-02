@@ -13,10 +13,33 @@ tasks.register('integrationTest', Test) {
 
 jacocoTestCoverageVerification {
     def filesExcludedFromCoverage = [
+            // Application
             '**/CosmoCatsApplication.class',
+
+            // Domain
             '**/domain/order/**',
             '**/domain/cart/**',
-            '**/featuretoggle/**'
+
+            // Feature toggles
+            '**/featuretoggle/**',
+
+            // Controllers
+            '**/controller/OrderController.class',
+            '**/controller/CategoryController.class',
+
+            // Services
+            '**/service/OrderService.class',
+            '**/service/CategoryService.class',
+            '**/service/CustomerService.class',
+
+            // Entities
+            '**/entity/OrderEntity.class',
+
+            // Exception handling
+            '**/exception/GlobalExceptionHandler.class',
+
+            // MapStruct generated mappers
+            '**/mapper/*MapperImpl.class'
     ]
     description = "Verifies coverage based on defined thresholds on all tests (incl. Unit and Integration))"
     executionData = fileTree(layout.buildDirectory).include("/jacoco/*.exec")

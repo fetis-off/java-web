@@ -25,7 +25,3 @@ spring:
   liquibase:
     change-log: classpath:liquibase/changelog.yaml
     enabled: true
-    feature:
-      toggles:
-        cosmo-cats: false
-

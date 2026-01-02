@@ -46,6 +46,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(CustomerNotFoundException.class)
+    ProblemDetail handleCustomerNotFoundException(CustomerNotFoundException ex) {
+        log.info("Customer Not Found Exception occurred");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("customer-not-found"));
+        problemDetail.setTitle("Customer Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    ProblemDetail handleOrderNotFoundException(OrderNotFoundException ex) {
+        log.info("Order Not Found Exception occurred");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problemDetail.setType(create("order-not-found"));
+        problemDetail.setTitle("Order Not Found");
+        return problemDetail;
+    }
+
+    @ExceptionHandler(OrderCancellingException.class)
+    ProblemDetail handleOrderCancellingException(OrderCancellingException ex) {
+        log.info("Order Cancelling Exception occurred");
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        problemDetail.setType(create("order-cancelling"));
+        problemDetail.setTitle("Order Cancelling");
+        return problemDetail;
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,

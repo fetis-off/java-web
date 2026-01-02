@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,4 +38,20 @@ public class OrderEntity {
 
     @OneToMany(mappedBy = "order",  cascade = {CascadeType.PERSIST, CascadeType.MERGE},  orphanRemoval = true)
     private List<OrderItemEntity> orderItems;
+
+    public void addOrderItem(OrderItemEntity orderItem) {
+        if (CollectionUtils.isEmpty(orderItems)) {
+            orderItems = new ArrayList<>();
+        }
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItemEntity orderItem) {
+        if (CollectionUtils.isEmpty(orderItems)) {
+            return;
+        }
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
+    }
 }

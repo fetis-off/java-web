@@ -37,6 +37,13 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    public CategoryEntity findCategoryEntityById(Long id) {
+        log.info("Trying to find category by id: {}", id);
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category with id: " + id +" was not found"));
+    }
+
+    @Transactional(readOnly = true)
     public List<CategoryResponseDto> findAllCategories() {
         log.info("Finding all categories");
         return categoryRepository.findAll().stream()
