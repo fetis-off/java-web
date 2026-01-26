@@ -1,27 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/cosmo_cats_db
-    username: username
-    password: password
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    properties:
-      hibernate:
-        default_schema: public
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
-
-
-  application:
-    name:
-      cosmo-cats
-
-    feature:
-      toggles:
-        cosmo-cats: false
-
   security:
     oauth2:
       resourceserver:
@@ -41,7 +18,3 @@ spring:
             authorization-uri: https://github.com/login/oauth/authorize
             token-uri: https://github.com/login/oauth/access_token
             user-info-uri: https://api.github.com/user
-
-  liquibase:
-    change-log: classpath:liquibase/changelog.yaml
-    enabled: true
