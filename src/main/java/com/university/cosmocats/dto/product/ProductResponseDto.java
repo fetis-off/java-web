@@ -1,5 +1,6 @@
 package com.university.cosmocats.dto.product;
 
+import com.university.cosmocats.domain.product.Category;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -13,5 +14,5 @@ public class ProductResponseDto {
     private String name;
     private String description;
     private BigDecimal price;
-    private String category;
+    private Category category;
 }

@@ -1,4 +1,19 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/cosmo_cats_db
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+
+
   application:
     name:
       cosmo-cats
@@ -7,3 +22,6 @@ spring:
       toggles:
         cosmo-cats: false
 
+  liquibase:
+    change-log: classpath:liquibase/changelog.yaml
+    enabled: true

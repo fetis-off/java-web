@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: lab-3
+      author: fetis_off
+      changes:
+        # Create sequence for Category ID
+        - createSequence:
+            sequenceName: category_id_seq
+            incrementBy: 50
+
+        - createTable:
+            tableName: category
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+        - addUniqueConstraint:
+            tableName: category
+            columnNames: name
+            constraintName: uq_category_name
