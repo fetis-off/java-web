@@ -2,6 +2,7 @@ package com.university.cosmocats.service;
 
 import com.university.cosmocats.dto.category.CategoryResponseDto;
 import com.university.cosmocats.dto.category.CreateCategoryRequestDto;
+import com.university.cosmocats.dto.category.ProductCategoryData;
 import com.university.cosmocats.entity.CategoryEntity;
 import com.university.cosmocats.exception.CategoryNotFoundException;
 import com.university.cosmocats.mapper.CategoryMapper;
@@ -29,14 +30,11 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public CategoryResponseDto findCategoryById(Long id) {
-        log.info("Trying to find category by id: {}", id);
-        CategoryEntity category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category with id: " + id +" was not found"));
+        CategoryEntity category = findCategoryEntityById(id);
 
         return categoryMapper.toCategoryResponseDto(category);
     }
 
-    @Transactional(readOnly = true)
     public CategoryEntity findCategoryEntityById(Long id) {
         log.info("Trying to find category by id: {}", id);
         return categoryRepository.findById(id)
@@ -67,6 +65,15 @@ public class CategoryService {
     public void deleteCategoryById(Long id) {
         log.info("Deleting category with id: {}", id);
         categoryRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ProductCategoryData getAllProductsByCategoryId(Long id) {
+        log.info("Finding all products by category with id: {}", id);
+        CategoryEntity categoryEntity = categoryRepository.findByIdWithProducts(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category with id: " + id +" was not found"));
+
+        return categoryMapper.toProductCategoryData(categoryEntity);
     }
 
 }

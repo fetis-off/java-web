@@ -1,5 +1,6 @@
 package com.university.cosmocats.service.product;
 
+import com.university.cosmocats.config.MappersTestConfiguration;
 import com.university.cosmocats.dto.product.ProductRequestDto;
 import com.university.cosmocats.dto.product.ProductResponseDto;
 import com.university.cosmocats.dto.product.UpdateProductRequestDto;
@@ -20,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("Product service tests")
 @ExtendWith(MockitoExtension.class)
+@Import(MappersTestConfiguration.class)
 class ProductServiceTest {
     private static final Long CATEGORY_ID = 10L;
     private static final String CATEGORY_NAME = "Food";

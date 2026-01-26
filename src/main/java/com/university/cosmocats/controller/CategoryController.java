@@ -2,6 +2,7 @@ package com.university.cosmocats.controller;
 
 import com.university.cosmocats.dto.category.CategoryResponseDto;
 import com.university.cosmocats.dto.category.CreateCategoryRequestDto;
+import com.university.cosmocats.dto.category.ProductCategoryData;
 import com.university.cosmocats.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +51,10 @@ public class CategoryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategoryById(id);
+    }
+
+    @GetMapping("/{id}/products")
+    public ResponseEntity<ProductCategoryData> getAllProductsByCategoryId(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getAllProductsByCategoryId(id));
     }
 }
